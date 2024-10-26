@@ -13,7 +13,7 @@ COPY ["src/ProductSale.Api/ProductSale.Api/ProductSale.Api.csproj", "ProductSale
 COPY ["src/ProductSale.Api/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
 RUN dotnet restore "./ProductSale.Api/ProductSale.Api.csproj"
 COPY . .
-WORKDIR "/src/ProductSale.Api"
+WORKDIR "/src/ProductSale.Api/ProductSale.Api"
 RUN dotnet build "./ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
