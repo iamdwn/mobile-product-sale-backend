@@ -1,26 +1,36 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
-WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
+# Use the .NET 8.0 SDK for the build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
+
+# Set working directory within the container
 WORKDIR /src
-COPY ["src/ProductSale.Api/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
-COPY ["src/ProductSale.Api/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
-RUN dotnet restore "./ProductSale.Api/ProductSale.Api.csproj"
+
+# Copy the project files and restore dependencies
+COPY ["src/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
+COPY ["src/ProductSale.Api/ProductSale.Data.csproj", "ProductSale.Data/"]
+
+# Restore dependencies
+RUN dotnet restore "ProductSale.Api/ProductSale.Api.csproj"
+
+# Copy all project files and build the application
 COPY . .
 WORKDIR "/src/ProductSale.Api"
-RUN dotnet build "./ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "ProductSale.Api.csproj" -c Release -o /app/build
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+# Publish the application to a folder named /app/publish
+RUN dotnet publish "ProductSale.Api.csproj" -c Release -o /app/publish
 
-FROM base AS final
+# Use the official .NET runtime image for running the app
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+
+# Set the working directory
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+# Copy the published files from the build container
+COPY --from=build /app/publish .
+
+# Expose the port that your app will run on
+EXPOSE 80
+EXPOSE 443
+
+# Run the app
 ENTRYPOINT ["dotnet", "ProductSale.Api.dll"]
