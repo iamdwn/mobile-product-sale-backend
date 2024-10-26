@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProductSale.Api.Models;
+﻿namespace ProductSale.Data.Models;
 
 public partial class User
 {
@@ -21,7 +18,7 @@ public partial class User
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
-    public virtual ICollection<Chatmessage> Chatmessages { get; set; } = new List<Chatmessage>();
+    public virtual ICollection<ChatMessage> ChatMessages { get; set; } = new List<ChatMessage>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
