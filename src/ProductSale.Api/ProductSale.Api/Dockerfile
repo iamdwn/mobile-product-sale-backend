@@ -5,8 +5,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy the project files and restore dependencies
-COPY ["src/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
-COPY ["src/ProductSale.Api/ProductSale.Data.csproj", "ProductSale.Data/"]
+COPY ["src/ProductSale.Api/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
+COPY ["src/ProductSale.Api/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
 
 # Restore dependencies
 RUN dotnet restore "ProductSale.Api/ProductSale.Api.csproj"
