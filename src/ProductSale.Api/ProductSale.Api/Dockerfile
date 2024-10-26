@@ -5,7 +5,7 @@ WORKDIR /src
 
 # Copy the .csproj files and restore dependencies
 COPY ["src/ProductSale.Api/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
-COPY ["src/ProductSale.Data/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
+COPY ["src/ProductSale.Api/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
 RUN dotnet restore "./ProductSale.Api/ProductSale.Api.csproj"
 
 # Copy the entire project files and build the application
