@@ -5,11 +5,7 @@ VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductSale.Api", "ProductSale.Api\ProductSale.Api.csproj", "{D1CF5EB5-6C52-4A79-8733-639A434FAEC9}"
 EndProject
-<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductSale.Data", "ProductSale.Data\ProductSale.Data.csproj", "{3013464E-3C68-4198-B6F1-6D18CEE7C710}"
-=======
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductSale.Data", "ProductSale.Data\ProductSale.Data.csproj", "{3013464E-3C68-4198-B6F1-6D18CEE7C710}"
->>>>>>> 140f9de4e5456546c7b6ef71c1f82f4d1cdfc11c
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
