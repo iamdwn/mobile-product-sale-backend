@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ProductSale.Data.Models;
 
-namespace ProductSale.Api.Models;
-
-public partial class Chatmessage
+public partial class ChatMessage
 {
     public int ChatMessageId { get; set; }
 
