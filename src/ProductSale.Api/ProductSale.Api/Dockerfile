@@ -1,21 +1,26 @@
-# Set base image for building the project
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-
-# Copy the .csproj files and restore dependencies
 COPY ["src/ProductSale.Api/ProductSale.Api/ProductSale.Api.csproj", "ProductSale.Api/"]
 COPY ["src/ProductSale.Api/ProductSale.Data/ProductSale.Data.csproj", "ProductSale.Data/"]
 RUN dotnet restore "./ProductSale.Api/ProductSale.Api.csproj"
-
-# Copy the entire project files and build the application
 COPY . .
-WORKDIR /src/ProductSale.Api
-RUN dotnet build "ProductSale.Api.csproj" -c $BUILD_CONFIGURATION --no-restore
-RUN dotnet publish "ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app --no-restore
+WORKDIR "/src/ProductSale.Api"
+RUN dotnet build "./ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Set the base image for running the application
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./ProductSale.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ProductSale.Api.dll"]
