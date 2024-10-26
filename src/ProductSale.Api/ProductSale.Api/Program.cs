@@ -1,5 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProductSale.Api.Services;
+using ProductSale.Api.Services.Interfaces;
+using ProductSale.Data.Base;
 using ProductSale.Data.Persistences;
 
 namespace ProductSale.Api
@@ -21,6 +24,12 @@ namespace ProductSale.Api
             builder.Services.AddDbContext<ProductSaleContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
                 );
+
+            // Add UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Add Services
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
 
