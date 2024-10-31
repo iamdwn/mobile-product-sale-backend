@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProductSale.Api.Models;
+﻿namespace ProductSale.Data.Models;
 
 public partial class Product
 {
@@ -21,7 +18,7 @@ public partial class Product
 
     public int? CategoryId { get; set; }
 
-    public virtual ICollection<Cartitem> Cartitems { get; set; } = new List<Cartitem>();
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category? Category { get; set; }
 }

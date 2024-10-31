@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProductSale.Api.Models;
+﻿namespace ProductSale.Data.Models;
 
 public partial class Notification
 {
@@ -11,7 +8,7 @@ public partial class Notification
 
     public string? Message { get; set; }
 
-    public ulong IsRead { get; set; }
+    public bool IsRead { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
