@@ -18,6 +18,8 @@ namespace ProductSale.Api.Controllers
         public async Task<IActionResult> GetProducts()
         {
             return Ok(await _productService.GetProducts());
-        }
+        }  
+        
+        
     }
 }
