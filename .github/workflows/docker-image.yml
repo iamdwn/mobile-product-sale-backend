@@ -27,7 +27,6 @@ jobs:
           CNAME=${{ env.CONTAINER_NAME }}
           INAME=${{ env.IMAGE_NAME }}
 
-          # Check if the container exists
           if [ "$(docker ps -aq -f name=$CNAME)" ]; then
               if [ "$(docker ps -aq -f status=exited -f name=$CNAME)" ]; then
                   echo ":: Container $CNAME exists and is exited"
@@ -44,7 +43,6 @@ jobs:
               echo ":: No existing container named $CNAME"
           fi
 
-          # Run the new container with the environment variable for database connection
           echo ":: Running new container - $CNAME"
           docker run -d -p 8080:8080 --name $CNAME \
             -e ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING" \
