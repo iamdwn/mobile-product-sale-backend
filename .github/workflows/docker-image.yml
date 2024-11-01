@@ -23,6 +23,9 @@ jobs:
       - name: Manage Docker Container
         env:
           DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          BANK_ACCOUNT: ${{ secrets.BANK_ACCOUNT }}
+          ACCOUNT_NAME: ${{ secrets.ACCOUNT_NAME }}
+          TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
           INAME=${{ env.IMAGE_NAME }}
@@ -46,4 +49,7 @@ jobs:
           echo ":: Running new container - $CNAME"
           docker run -d -p 8080:8080 --name $CNAME \
             -e ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING" \
+            -e BankAccount="$BANK_ACCOUNT" \
+            -e AccountName="$ACCOUNT_NAME" \
+            -e TemplateId="$TEMPLATE_ID" \
             $INAME
