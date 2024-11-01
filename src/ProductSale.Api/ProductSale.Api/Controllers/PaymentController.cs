@@ -35,7 +35,7 @@ namespace ProductSale.Api.Controllers
         [HttpPut]
         public async Task UpdatePayment(PaymentReq req)
         {
-            await _paymentService.CreatePayment(req);
+            await _paymentService.UpdatePayment(req);
         }
 
         [HttpDelete]
