@@ -54,7 +54,7 @@ public partial class ProductSaleContext : DbContext
 
         if (string.IsNullOrEmpty(connectionString))
         {
-            throw new InvalidOperationException($"Chuỗi kết nối '{connectionStringName}' không được cấu hình. Vui lòng đặt biến môi trường 'ConnectionStrings__{connectionStringName}'.");
+            throw new InvalidOperationException($"'{connectionStringName}' is not configured. Please set up .env 'ConnectionStrings__{connectionStringName}'.");
         }
 
         return connectionString;
