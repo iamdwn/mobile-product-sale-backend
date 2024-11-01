@@ -1,4 +1,4 @@
-﻿using ProductSale.Api.Models;
+﻿using ProductSale.Data.Models;
 using ProductSale.Data.Persistences;
 using System.ComponentModel.DataAnnotations;
 
@@ -8,14 +8,14 @@ namespace ProductSale.Data.Base
     {
         private ProductSaleContext context;
         private GenericRepository<Cart> cartRepository;
-        private GenericRepository<Cartitem> cartItemRepository;
+        private GenericRepository<CartItem> cartItemRepository;
         private GenericRepository<Category> categoryRepository;
-        private GenericRepository<Chatmessage> chatMessageRepository;
+        private GenericRepository<ChatMessage> chatMessageRepository;
         private GenericRepository<Notification> notificationRepository;
         private GenericRepository<Order> orderRepository;
         private GenericRepository<Payment> paymentRepository;
         private GenericRepository<Product> productRepository;
-        private GenericRepository<Storelocation> storelocationRepository;
+        private GenericRepository<StoreLocation> storelocationRepository;
         private GenericRepository<User> userRepository;
 
         public UnitOfWork(ProductSaleContext _context)
@@ -39,19 +39,19 @@ namespace ProductSale.Data.Base
             }
         }
 
-        public IGenericRepository<Cartitem> CartitemRepository
+        public IGenericRepository<CartItem> CartItemRepository
         {
             get
             {
-                return cartItemRepository ??= new GenericRepository<Cartitem>(context);
+                return cartItemRepository ??= new GenericRepository<CartItem>(context);
             }
         }
 
-        public IGenericRepository<Chatmessage> ChatmessageRepository
+        public IGenericRepository<ChatMessage> ChatMessageRepository
         {
             get
             {
-                return chatMessageRepository ??= new GenericRepository<Chatmessage>(context);
+                return chatMessageRepository ??= new GenericRepository<ChatMessage>(context);
             }
         }
 
@@ -79,11 +79,11 @@ namespace ProductSale.Data.Base
             }
         }
 
-        public IGenericRepository<Storelocation> StorelocationRepository
+        public IGenericRepository<StoreLocation> StoreLocationRepository
         {
             get
             {
-                return storelocationRepository ??= new GenericRepository<Storelocation>(context);
+                return storelocationRepository ??= new GenericRepository<StoreLocation>(context);
             }
         }
 

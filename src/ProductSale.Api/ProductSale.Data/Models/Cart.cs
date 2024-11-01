@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ProductSale.Api.Models;
+﻿namespace ProductSale.Data.Models;
 
 public partial class Cart
 {
@@ -13,7 +10,7 @@ public partial class Cart
 
     public string Status { get; set; } = null!;
 
-    public virtual ICollection<Cartitem> Cartitems { get; set; } = new List<Cartitem>();
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 

@@ -1,6 +1,6 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-using ProductSale.Api.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using ProductSale.Data.Models;
 
 namespace ProductSale.Data.Persistences;
 
@@ -17,11 +17,11 @@ public partial class ProductSaleContext : DbContext
 
     public virtual DbSet<Cart> Carts { get; set; }
 
-    public virtual DbSet<Cartitem> Cartitems { get; set; }
+    public virtual DbSet<CartItem> CartItems { get; set; }
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<Chatmessage> Chatmessages { get; set; }
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; }
 
     public virtual DbSet<Notification> Notifications { get; set; }
 
@@ -31,130 +31,106 @@ public partial class ProductSaleContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
-    public virtual DbSet<Storelocation> Storelocations { get; set; }
+    public virtual DbSet<StoreLocation> StoreLocations { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=DUONG;database=salesappdb;uid=root;pwd=dozungo", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.2.0-mysql"));
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+
+    public static string GetConnectionString(string connectionStringName)
+    {
+        IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder
-            .UseCollation("utf8mb4_0900_ai_ci")
-            .HasCharSet("utf8mb4");
-
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.CartId).HasName("PRIMARY");
-
-            entity.ToTable("carts");
-
-            entity.HasIndex(e => e.UserId, "UserID");
+            entity.HasKey(e => e.CartId).HasName("PK__Carts__51BCD797D4F9D557");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.Status).HasMaxLength(50);
-            entity.Property(e => e.TotalPrice).HasPrecision(18, 2);
+            entity.Property(e => e.TotalPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Carts)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("carts_ibfk_1");
+                .HasConstraintName("FK__Carts__UserID__3E52440B");
         });
 
-        modelBuilder.Entity<Cartitem>(entity =>
+        modelBuilder.Entity<CartItem>(entity =>
         {
-            entity.HasKey(e => e.CartItemId).HasName("PRIMARY");
-
-            entity.ToTable("cartitems");
-
-            entity.HasIndex(e => e.CartId, "CartID");
-
-            entity.HasIndex(e => e.ProductId, "ProductID");
+            entity.HasKey(e => e.CartItemId).HasName("PK__CartItem__488B0B2AB48D158E");
 
             entity.Property(e => e.CartItemId).HasColumnName("CartItemID");
             entity.Property(e => e.CartId).HasColumnName("CartID");
-            entity.Property(e => e.Price).HasPrecision(18, 2);
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
-            entity.HasOne(d => d.Cart).WithMany(p => p.Cartitems)
+            entity.HasOne(d => d.Cart).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.CartId)
-                .HasConstraintName("cartitems_ibfk_1");
+                .HasConstraintName("FK__CartItems__CartI__412EB0B6");
 
-            entity.HasOne(d => d.Product).WithMany(p => p.Cartitems)
+            entity.HasOne(d => d.Product).WithMany(p => p.CartItems)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("cartitems_ibfk_2");
+                .HasConstraintName("FK__CartItems__Produ__4222D4EF");
         });
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.CategoryId).HasName("PRIMARY");
-
-            entity.ToTable("categories");
+            entity.HasKey(e => e.CategoryId).HasName("PK__Categori__19093A2BABAF0D84");
 
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
             entity.Property(e => e.CategoryName).HasMaxLength(100);
         });
 
-        modelBuilder.Entity<Chatmessage>(entity =>
+        modelBuilder.Entity<ChatMessage>(entity =>
         {
-            entity.HasKey(e => e.ChatMessageId).HasName("PRIMARY");
-
-            entity.ToTable("chatmessages");
-
-            entity.HasIndex(e => e.UserId, "UserID");
+            entity.HasKey(e => e.ChatMessageId).HasName("PK__ChatMess__9AB61055835CF78C");
 
             entity.Property(e => e.ChatMessageId).HasColumnName("ChatMessageID");
-            entity.Property(e => e.Message).HasColumnType("text");
             entity.Property(e => e.SentAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Chatmessages)
+            entity.HasOne(d => d.User).WithMany(p => p.ChatMessages)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("chatmessages_ibfk_1");
+                .HasConstraintName("FK__ChatMessa__UserI__534D60F1");
         });
 
         modelBuilder.Entity<Notification>(entity =>
         {
-            entity.HasKey(e => e.NotificationId).HasName("PRIMARY");
-
-            entity.ToTable("notifications");
-
-            entity.HasIndex(e => e.UserId, "UserID");
+            entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E32429DF8D8");
 
             entity.Property(e => e.NotificationId).HasColumnName("NotificationID");
             entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
-            entity.Property(e => e.IsRead)
-                .HasDefaultValueSql("b'0'")
-                .HasColumnType("bit(1)");
             entity.Property(e => e.Message).HasMaxLength(255);
             entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Notifications)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("notifications_ibfk_1");
+                .HasConstraintName("FK__Notificat__UserI__4F7CD00D");
         });
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.OrderId).HasName("PRIMARY");
-
-            entity.ToTable("orders");
-
-            entity.HasIndex(e => e.CartId, "CartID");
-
-            entity.HasIndex(e => e.UserId, "UserID");
+            entity.HasKey(e => e.OrderId).HasName("PK__Orders__C3905BAFDE395207");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.BillingAddress).HasMaxLength(255);
             entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.OrderDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.OrderStatus).HasMaxLength(50);
             entity.Property(e => e.PaymentMethod).HasMaxLength(50);
@@ -162,75 +138,61 @@ public partial class ProductSaleContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CartId)
-                .HasConstraintName("orders_ibfk_1");
+                .HasConstraintName("FK__Orders__CartID__45F365D3");
 
             entity.HasOne(d => d.User).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("orders_ibfk_2");
+                .HasConstraintName("FK__Orders__UserID__46E78A0C");
         });
 
         modelBuilder.Entity<Payment>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PRIMARY");
-
-            entity.ToTable("payments");
-
-            entity.HasIndex(e => e.OrderId, "OrderID");
+            entity.HasKey(e => e.PaymentId).HasName("PK__Payments__9B556A58FC3254BB");
 
             entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
-            entity.Property(e => e.Amount).HasPrecision(18, 2);
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.PaymentDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.PaymentStatus).HasMaxLength(50);
 
             entity.HasOne(d => d.Order).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("payments_ibfk_1");
+                .HasConstraintName("FK__Payments__OrderI__4AB81AF0");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.ProductId).HasName("PRIMARY");
-
-            entity.ToTable("products");
-
-            entity.HasIndex(e => e.CategoryId, "CategoryID");
+            entity.HasKey(e => e.ProductId).HasName("PK__Products__B40CC6ED35B1E7A7");
 
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
             entity.Property(e => e.BriefDescription).HasMaxLength(255);
             entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
-            entity.Property(e => e.FullDescription).HasColumnType("text");
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
                 .HasColumnName("ImageURL");
-            entity.Property(e => e.Price).HasPrecision(18, 2);
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ProductName).HasMaxLength(100);
-            entity.Property(e => e.TechnicalSpecifications).HasColumnType("text");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("products_ibfk_1");
+                .HasConstraintName("FK__Products__Catego__3B75D760");
         });
 
-        modelBuilder.Entity<Storelocation>(entity =>
+        modelBuilder.Entity<StoreLocation>(entity =>
         {
-            entity.HasKey(e => e.LocationId).HasName("PRIMARY");
-
-            entity.ToTable("storelocations");
+            entity.HasKey(e => e.LocationId).HasName("PK__StoreLoc__E7FEA477D63762D4");
 
             entity.Property(e => e.LocationId).HasColumnName("LocationID");
             entity.Property(e => e.Address).HasMaxLength(255);
-            entity.Property(e => e.Latitude).HasPrecision(9, 6);
-            entity.Property(e => e.Longitude).HasPrecision(9, 6);
+            entity.Property(e => e.Latitude).HasColumnType("decimal(9, 6)");
+            entity.Property(e => e.Longitude).HasColumnType("decimal(9, 6)");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PRIMARY");
-
-            entity.ToTable("users");
+            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACC269A737");
 
             entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.Address).HasMaxLength(255);

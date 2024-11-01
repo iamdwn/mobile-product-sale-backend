@@ -10,6 +10,8 @@ jobs:
     env:
       CONTAINER_NAME: ProductSaleBEContainer
       IMAGE_NAME: productsale-be:latest
+      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

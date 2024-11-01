@@ -1,6 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using ProductSale.Data.Persistences;
 
+using Microsoft.EntityFrameworkCore;
+using ProductSale.Api.Services;
+using ProductSale.Api.Services.Interfaces;
+using ProductSale.Data.Base;
+using ProductSale.Data.Persistences;
+
 namespace ProductSale.Api
 {
     public class Program
@@ -30,6 +36,21 @@ namespace ProductSale.Api
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
 
+
+            //Auto Mapper
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Add DbContext
+            builder.Services.AddDbContext<ProductSaleContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                );
+
+            // Add UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Add Services
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
 
             var app = builder.Build();
 
