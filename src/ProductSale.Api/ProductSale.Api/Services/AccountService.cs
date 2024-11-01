@@ -6,7 +6,6 @@ using ProductSale.Data.DTO.RequestModel;
 using ProductSale.Data.DTO.ResponseModel;
 using ProductSale.Data.Models;
 using System.Net;
-using System.Text;
 
 namespace ProductSale.Api.Services
 {
