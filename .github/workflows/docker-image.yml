@@ -10,7 +10,6 @@ jobs:
     env:
       CONTAINER_NAME: ProductSaleBEContainer
       IMAGE_NAME: productsale-be:latest
-      CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
       
     steps:
       - name: Checkout code
@@ -22,6 +21,8 @@ jobs:
           docker build -t $INAME -f ./src/ProductSale.Api/ProductSale.Api/Dockerfile .
 
       - name: Manage Docker Container
+        env:
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
           INAME=${{ env.IMAGE_NAME }}
@@ -43,6 +44,8 @@ jobs:
               echo ":: No existing container named $CNAME"
           fi
 
-          # Run the new container
+          # Run the new container with the environment variable for database connection
           echo ":: Running new container - $CNAME"
-          docker run -d -p 8080:8080 --name $CNAME $INAME
+          docker run -d -p 8080:8080 --name $CNAME \
+            -e ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING" \
+            $INAME
