@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductSale.Api.Services.Interfaces;
+using ProductSale.Data.DTO.RequestModel;
+using ProductSale.Data.DTO.ResponseModel;
 
 namespace ProductSale.Api.Controllers
 {
@@ -16,9 +18,21 @@ namespace ProductSale.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserByUserName(string userName)
+        public async Task<ResponseDTO> GetUserByUserName(string userName)
         {
-            return Ok(await _accountService.getUserByUserName(userName));
+            return await _accountService.getUserByUserName(userName);
+        } 
+        
+        [HttpPost("registration")]
+        public async Task<ResponseDTO> Register(Register register)
+        {
+            return await _accountService.register(register);
+        }
+        
+        [HttpPost("authen")]
+        public async Task<ResponseDTO> Login(string username, string password)
+        {
+            return await _accountService.Login(username,password);
         }
 
     }
