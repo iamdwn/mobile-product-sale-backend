@@ -1,6 +1,6 @@
-﻿using ProductSale.Api.Services.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc;
+using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
-using ProductSale.Data.Models;
 
 namespace ProductSale.Api.Services
 {
@@ -13,9 +13,20 @@ namespace ProductSale.Api.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<IEnumerable<Product>> GetProducts()
+        public Task<IActionResult> GetProduct(int id)
         {
-            return Task.FromResult(_unitOfWork.ProductRepository.Get());
+            var product = _unitOfWork.ProductRepository.GetByID(id);
+            if (product == null)
+            {
+                return Task.FromResult<IActionResult>(new NotFoundResult());
+            }
+            return Task.FromResult<IActionResult>(new OkObjectResult(product));
+        }
+
+        public Task<IActionResult> GetProducts()
+        {
+            var products = _unitOfWork.ProductRepository.Get();
+            return Task.FromResult<IActionResult>(new OkObjectResult(products));
         }
     }
 }

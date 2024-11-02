@@ -17,7 +17,13 @@ namespace ProductSale.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            return Ok(await _productService.GetProducts());
+            return await _productService.GetProducts();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProduct([FromRoute] int id)
+        {
+            return await _productService.GetProduct(id);
         }
     }
 }

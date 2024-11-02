@@ -31,6 +31,7 @@ namespace ProductSale.Api
             // Add Services
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<ICartService, CartService>();
 
             var app = builder.Build();
 
