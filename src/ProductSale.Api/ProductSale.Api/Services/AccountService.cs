@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.IdentityModel.Tokens;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Api.Services.Mapper;
 using ProductSale.Data.Base;
@@ -21,19 +22,30 @@ namespace ProductSale.Api.Services
             _mapper = mapper;
         }
 
-        public async Task<ResponseDTO> getUserByUserName(string userName)
+
+        public async Task<ResponseDTO> GetUserByUserNameOrEmail(FieldType type, string content)
         {
-            if (userName == null)
+            if (type == null && content == null)
+
+                return ResponseUtils.Error("Request fails", "Username or Email is required", HttpStatusCode.BadRequest);
+
+            User user = new User();
+            AccountDTO result = new AccountDTO();
+
+            if (!FieldTypeService.IsValidFieldType(type.ToString()))
+                return ResponseUtils.Error("Request fails", "Field type is invalid", HttpStatusCode.BadRequest);
+
+            if (FieldType.UserName == type)
             {
-                return ResponseUtils.Error("Request fails", "Username is required", HttpStatusCode.BadRequest);
+                user = await Task.FromResult(_unitOfWork.UserRepository.Get(c => c.Username.Equals(content)).SingleOrDefault());
             }
-
-            User user = await Task.FromResult(_unitOfWork.UserRepository.Get(c => c.Username.Equals(userName)).SingleOrDefault());
-            AccountDTO result = _mapper.Map<AccountDTO>(user);
-
+            else if (FieldType.Email == type)
+            {
+                user = await Task.FromResult(_unitOfWork.UserRepository.Get(c => c.Email.Equals(content)).SingleOrDefault());
+            }
+            result = _mapper.Map<AccountDTO>(user);
 
             return ResponseUtils.GetObject(result, "Account retrieve successfully", HttpStatusCode.OK, null);
-
         }
 
         public async Task<ResponseDTO> Login(string userName, string password)
@@ -77,5 +89,6 @@ namespace ProductSale.Api.Services
 
             return false;
         }
+
     }
 }
