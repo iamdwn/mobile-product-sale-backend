@@ -1,4 +1,6 @@
-﻿namespace ProductSale.Data.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ProductSale.Data.Models;
 
 public partial class CartItem
 {
@@ -12,6 +14,7 @@ public partial class CartItem
 
     public decimal Price { get; set; }
 
+    [JsonIgnore]
     public virtual Cart? Cart { get; set; }
 
     public virtual Product? Product { get; set; }
