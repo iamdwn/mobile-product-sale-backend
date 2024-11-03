@@ -6,8 +6,8 @@ namespace ProductSale.Api.Services.Interfaces
 {
     public interface IAccountService
     {
-        Task<ResponseDTO> getUserByUserName(string userName);
         Task<ResponseDTO> register(Register register);
         Task<ResponseDTO> Login(string userName, string password);
+        Task<ResponseDTO> GetUserByUserNameOrEmail(FieldType type, string content);
     }
 }
