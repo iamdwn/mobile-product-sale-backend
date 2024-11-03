@@ -10,6 +10,7 @@ jobs:
     env:
       CONTAINER_NAME: ProductSaleBEContainer
       IMAGE_NAME: productsale-be:latest
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,11 +21,15 @@ jobs:
           docker build -t $INAME -f ./src/ProductSale.Api/ProductSale.Api/Dockerfile .
 
       - name: Manage Docker Container
+        env:
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          BANK_ACCOUNT: ${{ secrets.BANK_ACCOUNT }}
+          ACCOUNT_NAME: ${{ secrets.ACCOUNT_NAME }}
+          TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
           INAME=${{ env.IMAGE_NAME }}
 
-          # Check if the container exists
           if [ "$(docker ps -aq -f name=$CNAME)" ]; then
               if [ "$(docker ps -aq -f status=exited -f name=$CNAME)" ]; then
                   echo ":: Container $CNAME exists and is exited"
@@ -41,6 +46,10 @@ jobs:
               echo ":: No existing container named $CNAME"
           fi
 
-          # Run the new container
           echo ":: Running new container - $CNAME"
-          docker run -d -p 8080:8080 --name $CNAME $INAME
+          docker run -d -p 8080:8080 --name $CNAME \
+            -e ConnectionStrings__DefaultConnection="$DB_CONNECTION_STRING" \
+            -e BankAccount="$BANK_ACCOUNT" \
+            -e AccountName="$ACCOUNT_NAME" \
+            -e TemplateId="$TEMPLATE_ID" \
+            $INAME

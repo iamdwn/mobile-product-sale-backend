@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using ProductSale.Data.Models;
 
 namespace ProductSale.Data.Persistences;
@@ -38,16 +37,29 @@ public partial class ProductSaleContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
 
+    //public static string GetConnectionString(string connectionStringName)
+    //{
+    //    IConfiguration config = new ConfigurationBuilder()
+    //        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    //        .AddJsonFile("appsettings.json")
+    //        .Build();
+
+    //    string connectionString = config.GetConnectionString(connectionStringName);
+    //    return connectionString;
+    //}
+
     public static string GetConnectionString(string connectionStringName)
     {
-        IConfiguration config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
+        string connectionString = Environment.GetEnvironmentVariable($"ConnectionStrings__{connectionStringName}");
 
-        string connectionString = config.GetConnectionString(connectionStringName);
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException($"'{connectionStringName}' is not configured. Please set up .env 'ConnectionStrings__{connectionStringName}'.");
+        }
+
         return connectionString;
     }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
