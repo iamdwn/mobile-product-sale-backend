@@ -26,6 +26,12 @@ namespace ProductSale.Api.Controllers
             return Ok(new { qrUrl });
         }
 
+        [HttpGet("get-status/{paymentId}")]
+        public async Task<bool> GetPaymentStatus(int paymentId)
+        {
+            return await _paymentService.GetPaymentStatus(paymentId);
+        }
+
         [HttpPost]
         public async Task<Payment> CreatePayment(PaymentReq req)
         {
