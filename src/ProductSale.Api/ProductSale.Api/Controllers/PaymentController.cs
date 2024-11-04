@@ -38,14 +38,14 @@ namespace ProductSale.Api.Controllers
             await _paymentService.UpdatePayment(req);
         }
 
-        [HttpDelete]
+        [HttpDelete("{paymentId}")]
         public async Task RemovePayment(int paymentId)
         {
             await _paymentService.RemovePayment(paymentId);
         }
 
         [HttpPost("complete-payment")]
-        public async Task CompletePayment(int paymentId)
+        public async Task CompletePayment([FromBody] int paymentId)
         {
             await _paymentService.CompletePayment(paymentId);
         }
