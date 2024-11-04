@@ -44,8 +44,8 @@ namespace ProductSale.Api.Controllers
             await _paymentService.RemovePayment(paymentId);
         }
 
-        [HttpPost("complete-payment")]
-        public async Task CompletePayment([FromBody] int paymentId)
+        [HttpPost("complete-payment/{paymentId}")]
+        public async Task CompletePayment(int paymentId)
         {
             await _paymentService.CompletePayment(paymentId);
         }
