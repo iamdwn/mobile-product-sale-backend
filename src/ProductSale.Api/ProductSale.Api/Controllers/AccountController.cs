@@ -19,13 +19,13 @@ namespace ProductSale.Api.Controllers
         }
 
         [HttpGet("user")]
-        public async Task<ResponseDTO> GetUserByUserNameOrEmail(FieldType type, string content)
+        public async Task<ResponseDTO> GetUserByUserNameOrEmail([FromQuery] FieldType type, string content)
         {
             return await _accountService.GetUserByUserNameOrEmail(type, content);
         } 
         
         [HttpPost("registration")]
-        public async Task<ResponseDTO> Register([FromQuery, Required] Register register)
+        public async Task<ResponseDTO> Register([FromBody] Register register)
         {
             return await _accountService.register(register);
         }
