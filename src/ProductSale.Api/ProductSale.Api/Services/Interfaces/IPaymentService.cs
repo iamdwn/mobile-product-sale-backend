@@ -11,5 +11,6 @@ namespace ProductSale.Api.Services.Interfaces
         Task<Payment> GetPaymentById(int paymentId);
         string GenerateVietQRUrl(Payment payment);
         Task CompletePayment(int paymentId);
+        Task<bool> GetPaymentStatus(int paymentId);
     }
 }

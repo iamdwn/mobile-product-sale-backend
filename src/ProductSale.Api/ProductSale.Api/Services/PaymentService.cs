@@ -66,6 +66,14 @@ namespace ProductSale.Api.Services
             return _unitOfWork.PaymentRepository.GetByID(paymentId);
         }
 
+        public async Task<bool> GetPaymentStatus(int paymentId)
+        {
+            var payment = GetPaymentById(paymentId).Result;
+            return payment.PaymentStatus.Equals(PaymentStatus.COMPLETED.ToString())
+                ? true : payment.PaymentStatus.Equals(PaymentStatus.FAILED.ToString())
+                ? true : false;
+        }
+
         public async Task RemovePayment(int paymentId)
         {
             var existingPayment = GetPaymentById(paymentId);
