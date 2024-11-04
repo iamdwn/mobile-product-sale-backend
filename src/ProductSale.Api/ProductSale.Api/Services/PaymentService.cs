@@ -55,7 +55,7 @@ namespace ProductSale.Api.Services
             string accountName = Environment.GetEnvironmentVariable("AccountName");
             string amount = payment.Amount.ToString("F0");
 
-            string qrUrl = $"https://api.vietqr.io/image/{bankId}-{bankAccount}-{templateId}.jpg?accountName={bankAccount}&amount={amount}&addInfo=test";
+            string qrUrl = $"https://api.vietqr.io/image/{bankId}-{bankAccount}-{templateId}.jpg?amount={amount}";
 
             return qrUrl;
         }
