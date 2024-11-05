@@ -1,4 +1,5 @@
-﻿using ProductSale.Api.Services.Interfaces;
+﻿using ProductSale.Api.Clients;
+using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
 using ProductSale.Data.Enums;
@@ -9,10 +10,12 @@ namespace ProductSale.Api.Services
     public class PaymentService : IPaymentService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly PayOSClient _payOSClient;
 
-        public PaymentService(IUnitOfWork unitOfWork)
+        public PaymentService(IUnitOfWork unitOfWork, PayOSClient payOSClient)
         {
             _unitOfWork = unitOfWork;
+            _payOSClient = payOSClient;
         }
 
         public async Task CompletePayment(int paymentId)
@@ -45,6 +48,24 @@ namespace ProductSale.Api.Services
             _unitOfWork.Save();
 
             return newPayment;
+        }
+
+        public async Task<string> CreatePayOSPaymentAsync(PaymentReq req)
+        {
+            var qrCodeUrl = await _payOSClient.CreatePaymentAsync(req.Amount, req.OrderId.ToString(), "Payment for Order #" + req.OrderId);
+
+            // Store payment in the database
+            var payment = new Payment
+            {
+                OrderId = req.OrderId,
+                Amount = req.Amount,
+                PaymentStatus = PaymentStatus.PENDING.ToString(),
+                PaymentDate = DateTime.Now
+            };
+            _unitOfWork.PaymentRepository.Insert(payment);
+            _unitOfWork.Save();
+
+            return qrCodeUrl;
         }
 
         public string GenerateVietQRUrl(Payment payment)
