@@ -38,6 +38,13 @@ namespace ProductSale.Api.Controllers
             return await _paymentService.CreatePayment(req);
         }
 
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePayOSPayment([FromBody] PaymentReq request)
+        {
+            var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
+            return Ok(new { QrCodeUrl = qrCodeUrl });
+        }
+
         [HttpPut]
         public async Task UpdatePayment(PaymentReq req)
         {

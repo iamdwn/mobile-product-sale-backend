@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProductSale.Api.Clients;
 using ProductSale.Api.Services;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
@@ -18,6 +19,9 @@ namespace ProductSale.Api
         options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")));
 
             builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Services.AddHttpClient<PayOSClient>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
