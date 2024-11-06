@@ -27,6 +27,7 @@ namespace ProductSale.Api
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<INotificationService, NotificationService>();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
