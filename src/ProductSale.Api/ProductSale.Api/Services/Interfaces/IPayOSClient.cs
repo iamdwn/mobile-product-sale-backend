@@ -5,7 +5,7 @@ namespace ProductSale.Api.Services.Interfaces
 {
     public interface IPayOSClient
     {
-        Task<PayOSPaymentResponseDTO> CreatePaymentAsync(PaymentReq request);
+        Task<PayOSPaymentResponseDTO> CreatePaymentAsync(PayOSPaymentRequestDTO request);
         Task<PayOSPaymentResponseDTO> VerifyPaymentAsync(string paymentId);
     }
 }

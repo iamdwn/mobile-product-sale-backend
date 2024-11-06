@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.DTO.RequestModel;
-using ProductSale.Data.Models;
 
 namespace ProductSale.Api.Controllers
 {
@@ -32,21 +31,21 @@ namespace ProductSale.Api.Controllers
             return await _paymentService.GetPaymentStatus(paymentId);
         }
 
-        [HttpPost]
-        public async Task<Payment> CreatePayment(PaymentReq req)
-        {
-            return await _paymentService.CreatePayment(req);
-        }
+        //[HttpPost]
+        //public async Task<Payment> CreatePayment(Pay req)
+        //{
+        //    return await _paymentService.CreatePayment(req);
+        //}
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePayOSPayment([FromBody] PaymentReq request)
+        public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
         {
             var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
             return Ok(new { QrCodeUrl = qrCodeUrl });
         }
 
         [HttpPut]
-        public async Task UpdatePayment(PaymentReq req)
+        public async Task UpdatePayment(PayOSPaymentRequestDTO req)
         {
             await _paymentService.UpdatePayment(req);
         }

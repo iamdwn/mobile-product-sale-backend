@@ -2,6 +2,8 @@
 {
     public class PayOSPaymentResponseDTO
     {
-        public string QrCodeUrl { get; set; }
+        public string Status { get; set; }
+        public string PaymentUrl { get; set; }
+        public string ReturnUrl { get; set; }
     }
 }
