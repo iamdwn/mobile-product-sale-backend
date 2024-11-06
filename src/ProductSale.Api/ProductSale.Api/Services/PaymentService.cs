@@ -34,7 +34,7 @@ namespace ProductSale.Api.Services
             _unitOfWork.Save();
         }
 
-        public async Task<Payment> CreatePayment(PaymentReq req)
+        public async Task<Payment> CreatePayment(PayOSPaymentRequestDTO req)
         {
             var newPayment = new Payment()
             {
@@ -50,11 +50,10 @@ namespace ProductSale.Api.Services
             return newPayment;
         }
 
-        public async Task<string> CreatePayOSPaymentAsync(PaymentReq req)
+        public async Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO req)
         {
-            var qrCodeUrl = await _payOSClient.CreatePaymentAsync(req.Amount, req.OrderId.ToString(), "Payment for Order #" + req.OrderId);
+            var qrCodeUrl = await _payOSClient.CreatePaymentRequest(req);
 
-            // Store payment in the database
             var payment = new Payment
             {
                 OrderId = req.OrderId,
@@ -65,7 +64,7 @@ namespace ProductSale.Api.Services
             _unitOfWork.PaymentRepository.Insert(payment);
             _unitOfWork.Save();
 
-            return qrCodeUrl;
+            return qrCodeUrl.PaymentUrl;
         }
 
         public string GenerateVietQRUrl(Payment payment)
@@ -111,9 +110,9 @@ namespace ProductSale.Api.Services
             _unitOfWork.Save();
         }
 
-        public async Task UpdatePayment(PaymentReq req)
+        public async Task UpdatePayment(PayOSPaymentRequestDTO req)
         {
-            var existingPayment = GetPaymentById(req.PaymentId);
+            var existingPayment = GetPaymentById(req.PaymentId ?? 0);
             if (existingPayment == null)
             {
                 throw new Exception("Not Found");

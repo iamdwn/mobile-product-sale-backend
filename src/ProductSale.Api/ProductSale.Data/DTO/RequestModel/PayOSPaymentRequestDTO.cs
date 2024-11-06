@@ -1,8 +1,8 @@
 ﻿namespace ProductSale.Data.DTO.RequestModel
 {
-    public class PaymentReq
+    public class PayOSPaymentRequestDTO
     {
-        public int PaymentId { get; set; }
+        public int? PaymentId { get; set; }
 
         public int? OrderId { get; set; }
 
