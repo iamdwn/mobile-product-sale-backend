@@ -24,6 +24,7 @@ namespace ProductSale.Api.Services.Mapper
 
             // Map CartItem to CartItemDTO
             CreateMap<CartItem, CartItemDTO>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))  // Assuming Product has ProductName
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price));
