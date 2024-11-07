@@ -5,7 +5,6 @@ namespace ProductSale.Api.Services.Interfaces
 {
     public interface IPaymentService
     {
-        Task<Payment> CreatePayment(PayOSPaymentRequestDTO req);
         Task UpdatePayment(PayOSPaymentRequestDTO req);
         Task RemovePayment(int paymentId);
         Task<Payment> GetPaymentById(int paymentId);
@@ -13,5 +12,6 @@ namespace ProductSale.Api.Services.Interfaces
         Task CompletePayment(int paymentId);
         Task<bool> GetPaymentStatus(int paymentId);
         Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO request);
+        Task<object> CancelPayOSPaymentAsync(long orderCode, string reason = "");
     }
 }
