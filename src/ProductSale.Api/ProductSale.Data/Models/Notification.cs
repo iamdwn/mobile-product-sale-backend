@@ -1,4 +1,7 @@
-﻿namespace ProductSale.Data.Models;
+﻿using AutoMapper.Configuration.Annotations;
+using System.Text.Json.Serialization;
+
+namespace ProductSale.Data.Models;
 
 public partial class Notification
 {
@@ -11,6 +14,6 @@ public partial class Notification
     public bool IsRead { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
+    [JsonIgnore]
     public virtual User? User { get; set; }
 }

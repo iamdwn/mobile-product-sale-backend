@@ -11,8 +11,11 @@ namespace ProductSale.Api.Services.Mapper
         public MappingProfile()
         {
             CreateMap<User, AccountDTO>();
-            CreateMap<AccountDTO, User >();
-            CreateMap<Register, User >();
+            CreateMap<AccountDTO, User>();
+            CreateMap<Register, User>();
+            CreateMap<NotificationDTO, Notification>();
+            CreateMap<Notification, NotificationDTO>();
+            CreateMap<NewNoti, Notification>();
         }
     }
 }

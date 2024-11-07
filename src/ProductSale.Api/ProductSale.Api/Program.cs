@@ -27,13 +27,29 @@ namespace ProductSale.Api
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddScoped<IPayOSClient, PayOSClient>();
+
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Add DbContext
+            builder.Services.AddDbContext<ProductSaleContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+                );
+
+            // Add UnitOfWork
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Add Services
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<IAccountService, AccountService>();
+            builder.Services.AddScoped<ICartService, CartService>();
             builder.Configuration.AddEnvironmentVariables();
 
             var app = builder.Build();
