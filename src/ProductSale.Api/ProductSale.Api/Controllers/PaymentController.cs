@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductSale.Api.Services.Interfaces;
+using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
 
 namespace ProductSale.Api.Controllers
@@ -9,10 +10,12 @@ namespace ProductSale.Api.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("get-vietqr/{paymentId}")]
@@ -52,8 +55,11 @@ namespace ProductSale.Api.Controllers
         [HttpPost("payos")]
         public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
         {
-            var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
-            return Ok(new { QrCodeUrl = qrCodeUrl });
+            var order = _unitOfWork.OrderRepository.GetByID(request.OrderId);
+            if (order == null) return NotFound();
+
+            string qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
+            return Ok(new { qrCodeUrl });
         }
 
         [HttpPost("cancel")]
