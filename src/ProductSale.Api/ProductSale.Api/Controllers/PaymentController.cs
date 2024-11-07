@@ -58,8 +58,8 @@ namespace ProductSale.Api.Controllers
             var order = _unitOfWork.OrderRepository.GetByID(request.OrderId);
             if (order == null) return NotFound();
 
-            string qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
-            return Ok(new { qrCodeUrl });
+            string qrUrl = await _paymentService.CreatePayOSPaymentAsync(request);
+            return Ok(new { qrUrl });
         }
 
         [HttpPost("cancel")]
