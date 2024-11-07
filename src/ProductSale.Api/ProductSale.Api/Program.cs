@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProductSale.Api.Services;
 using ProductSale.Api.Services.Interfaces;
+using ProductSale.Api.Services.Mapper;
 using ProductSale.Data.Base;
 using ProductSale.Data.Persistences;
 
@@ -18,6 +19,7 @@ namespace ProductSale.Api
         options.UseSqlServer(Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")));
 
             builder.Services.AddAutoMapper(typeof(Program));
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
@@ -30,9 +32,9 @@ namespace ProductSale.Api
             builder.Services.AddSwaggerGen();
 
             // Add DbContext
-            builder.Services.AddDbContext<ProductSaleContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-                );
+            //builder.Services.AddDbContext<ProductSaleContext>(options =>
+            //    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+            //    );
 
             // Add UnitOfWork
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -15,4 +15,13 @@ public partial class Cart
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual User? User { get; set; }
+
+    public void UpdateTotalPrice()
+    {
+        TotalPrice = 0;
+        foreach (var item in CartItems)
+        {
+            TotalPrice += item.Price * item.Quantity;
+        }
+    }
 }

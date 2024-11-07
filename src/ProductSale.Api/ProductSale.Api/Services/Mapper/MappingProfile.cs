@@ -11,8 +11,17 @@ namespace ProductSale.Api.Services.Mapper
         public MappingProfile()
         {
             CreateMap<User, AccountDTO>();
-            CreateMap<AccountDTO, User >();
-            CreateMap<Register, User >();
+            CreateMap<AccountDTO, User>();
+            CreateMap<Register, User>();
+
+            CreateMap<Cart, CartDTO>()
+            .ForMember(dest => dest.CartItems, opt => opt.MapFrom(src => src.CartItems));
+
+            // Map CartItem to CartItemDTO
+            CreateMap<CartItem, CartItemDTO>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))  // Assuming Product has ProductName
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price));
         }
     }
 }

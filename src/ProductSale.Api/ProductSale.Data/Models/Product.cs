@@ -1,4 +1,6 @@
-﻿namespace ProductSale.Data.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ProductSale.Data.Models;
 
 public partial class Product
 {
@@ -18,6 +20,7 @@ public partial class Product
 
     public int? CategoryId { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category? Category { get; set; }
