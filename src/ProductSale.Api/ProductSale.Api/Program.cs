@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProductSale.Api.Clients;
 using ProductSale.Api.Services;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Api.Services.Mapper;
@@ -21,10 +22,18 @@ namespace ProductSale.Api
             builder.Services.AddAutoMapper(typeof(Program));
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddHttpClient<PayOSClient>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+            builder.Services.AddScoped<IPayOSClient, PayOSClient>();
+
+            builder.Services.AddScoped<INotificationService, NotificationService>();
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

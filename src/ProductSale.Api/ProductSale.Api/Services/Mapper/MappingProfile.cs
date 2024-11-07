@@ -13,6 +13,11 @@ namespace ProductSale.Api.Services.Mapper
             CreateMap<User, AccountDTO>();
             CreateMap<AccountDTO, User>();
             CreateMap<Register, User>();
+            CreateMap<NotificationDTO, Notification>();
+            CreateMap<Notification, NotificationDTO>();
+            CreateMap<NewNoti, Notification>();
+            CreateMap<AccountDTO, User>();
+            CreateMap<Register, User>();
 
             CreateMap<Cart, CartDTO>()
             .ForMember(dest => dest.CartItems, opt => opt.MapFrom(src => src.CartItems));

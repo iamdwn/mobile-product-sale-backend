@@ -26,6 +26,9 @@ jobs:
           BANK_ACCOUNT: ${{ secrets.BANK_ACCOUNT }}
           ACCOUNT_NAME: ${{ secrets.ACCOUNT_NAME }}
           TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
+          PAYOS_API_KEY: ${{ secrets.PAYOS_API_KEY }}
+          PAYOS_CLIENT_ID: ${{ secrets.PAYOS_CLIENT_ID }}
+          PAYOS_CHECKSUM_KEY: ${{ secrets.PAYOS_CHECKSUM_KEY }}
         run: |
           CNAME=${{ env.CONTAINER_NAME }}
           INAME=${{ env.IMAGE_NAME }}
@@ -52,4 +55,7 @@ jobs:
             -e BankAccount="$BANK_ACCOUNT" \
             -e AccountName="$ACCOUNT_NAME" \
             -e TemplateId="$TEMPLATE_ID" \
+            -e ApiKey="$PAYOS_API_KEY" \
+            -e ClientId="$PAYOS_CLIENT_ID" \
+            -e ChecksumKey="$PAYOS_CHECKSUM_KEY" \
             $INAME

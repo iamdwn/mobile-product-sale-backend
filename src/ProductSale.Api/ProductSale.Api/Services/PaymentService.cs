@@ -9,10 +9,12 @@ namespace ProductSale.Api.Services
     public class PaymentService : IPaymentService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IPayOSClient _payOSClient;
 
-        public PaymentService(IUnitOfWork unitOfWork)
+        public PaymentService(IUnitOfWork unitOfWork, IPayOSClient payOSClient)
         {
             _unitOfWork = unitOfWork;
+            _payOSClient = payOSClient;
         }
 
         public async Task CompletePayment(int paymentId)
@@ -29,22 +31,6 @@ namespace ProductSale.Api.Services
 
             _unitOfWork.PaymentRepository.Update(updatedPayment);
             _unitOfWork.Save();
-        }
-
-        public async Task<Payment> CreatePayment(PaymentReq req)
-        {
-            var newPayment = new Payment()
-            {
-                OrderId = req.OrderId,
-                Amount = req.Amount,
-                PaymentDate = DateTime.Now,
-                PaymentStatus = PaymentStatus.PENDING.ToString()
-            };
-
-            _unitOfWork.PaymentRepository.Insert(newPayment);
-            _unitOfWork.Save();
-
-            return newPayment;
         }
 
         public string GenerateVietQRUrl(Payment payment)
@@ -74,6 +60,49 @@ namespace ProductSale.Api.Services
                 ? true : false;
         }
 
+        public async Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO req)
+        {
+            var existingOrder = _unitOfWork.OrderRepository.GetByID(req.OrderId);
+
+            if (existingOrder == null)
+            {
+                return "";
+            }
+
+            var existingCart = _unitOfWork.CartRepository.GetByID(existingOrder.CartId);
+
+            if (existingCart == null)
+            {
+                return "";
+            }
+
+            req.Amount = existingCart.TotalPrice;
+
+            var qrCodeUrl = await _payOSClient.PayOSAsync(req);
+
+            if (string.IsNullOrEmpty(qrCodeUrl))
+            {
+                return "";
+            }
+
+            var payment = new Payment
+            {
+                OrderId = req.OrderId,
+                Amount = req.Amount,
+                PaymentStatus = PaymentStatus.PENDING.ToString(),
+                PaymentDate = DateTime.Now
+            };
+            _unitOfWork.PaymentRepository.Insert(payment);
+            _unitOfWork.Save();
+
+            return qrCodeUrl;
+        }
+
+        public async Task<object> CancelPayOSPaymentAsync(long orderCode, string reason = "")
+        {
+            return await _payOSClient.CancelPayOSAsync(orderCode, reason);
+        }
+
         public async Task RemovePayment(int paymentId)
         {
             var existingPayment = GetPaymentById(paymentId);
@@ -90,9 +119,9 @@ namespace ProductSale.Api.Services
             _unitOfWork.Save();
         }
 
-        public async Task UpdatePayment(PaymentReq req)
+        public async Task UpdatePayment(PayOSPaymentRequestDTO req)
         {
-            var existingPayment = GetPaymentById(req.PaymentId);
+            var existingPayment = GetPaymentById(req.PaymentId ?? 0);
             if (existingPayment == null)
             {
                 throw new Exception("Not Found");
