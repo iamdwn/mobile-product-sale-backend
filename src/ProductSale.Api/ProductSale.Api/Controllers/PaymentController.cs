@@ -31,19 +31,6 @@ namespace ProductSale.Api.Controllers
             return await _paymentService.GetPaymentStatus(paymentId);
         }
 
-        //[HttpPost]
-        //public async Task<Payment> CreatePayment(Pay req)
-        //{
-        //    return await _paymentService.CreatePayment(req);
-        //}
-
-        [HttpPost("create")]
-        public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
-        {
-            var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
-            return Ok(new { QrCodeUrl = qrCodeUrl });
-        }
-
         [HttpPut]
         public async Task UpdatePayment(PayOSPaymentRequestDTO req)
         {
@@ -60,6 +47,20 @@ namespace ProductSale.Api.Controllers
         public async Task CompletePayment(int paymentId)
         {
             await _paymentService.CompletePayment(paymentId);
+        }
+
+        [HttpPost("payos")]
+        public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
+        {
+            var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
+            return Ok(new { QrCodeUrl = qrCodeUrl });
+        }
+
+        [HttpPost("cancel")]
+        public async Task<IActionResult> CancelPayOSPayment(long orderCode, string reason = "")
+        {
+            var cancelResponse = await _paymentService.CancelPayOSPaymentAsync(orderCode, reason);
+            return Ok(cancelResponse);
         }
     }
 }
