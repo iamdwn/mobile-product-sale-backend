@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
@@ -55,11 +56,39 @@ namespace ProductSale.Api.Controllers
         [HttpPost("payos")]
         public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
         {
-            var order = _unitOfWork.OrderRepository.GetByID(request.OrderId);
-            if (order == null) return NotFound();
+            try
+            {
+                var order = _unitOfWork.OrderRepository.GetByID(request.OrderId);
+                if (order == null) return NotFound();
 
-            string qrUrl = await _paymentService.CreatePayOSPaymentAsync(request);
-            return Ok(new { qrUrl });
+                string url = await _paymentService.CreatePayOSPaymentAsync(request);
+                //return Ok(new { qrUrl });
+                using HttpClient client = new HttpClient();
+                string html = await client.GetStringAsync(url);
+
+                HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(html);
+
+                HtmlNode qrNode = doc.DocumentNode.SelectSingleNode("//img[@alt='qrcode']");
+
+                if (qrNode != null)
+                {
+                    string qrUrl = qrNode.GetAttributeValue("src", "");
+                    string[] parts = qrUrl.Split(new string[] { "&amp;" }, StringSplitOptions.None);
+                    string decodedUrl = string.Join("&", parts);
+                    return Ok(new { decodedUrl });
+                }
+                else
+                {
+                    Console.WriteLine("Not found QRCode.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+
+            return Ok("");
         }
 
         [HttpPost("cancel")]
