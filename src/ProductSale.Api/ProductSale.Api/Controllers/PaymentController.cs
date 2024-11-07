@@ -75,8 +75,8 @@ namespace ProductSale.Api.Controllers
                 {
                     string qrUrl = qrNode.GetAttributeValue("src", "");
                     string[] parts = qrUrl.Split(new string[] { "&amp;" }, StringSplitOptions.None);
-                    string decodedUrl = string.Join("&", parts);
-                    return Ok(new { decodedUrl });
+                    qrUrl = string.Join("&", parts);
+                    return Ok(new { qrUrl });
                 }
                 else
                 {
