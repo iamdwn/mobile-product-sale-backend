@@ -92,10 +92,16 @@ namespace ProductSale.Api.Services
             if (cartItem == null)
                 return new NotFoundObjectResult("Product not found in cart.");
 
-            cart.CartItems.Remove(cartItem);
-            cart.UpdateTotalPrice();
+            if (cartItem.Quantity == 1)
+            {
+                cart.CartItems.Remove(cartItem);
+                _unitOfWork.CartItemRepository.Delete(cartItem);
+            }
 
-            _unitOfWork.CartItemRepository.Delete(cartItem);
+            cartItem.Quantity--;
+            _unitOfWork.CartItemRepository.Update(cartItem);
+
+            cart.UpdateTotalPrice();
             _unitOfWork.CartRepository.Update(cart);
             _unitOfWork.Save();
             return new OkObjectResult("Product removed from cart.");
