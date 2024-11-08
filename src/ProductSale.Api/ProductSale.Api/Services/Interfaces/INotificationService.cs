@@ -8,7 +8,7 @@ namespace ProductSale.Api.Services.Interfaces
         public Task<ResponseDTO> getAllNotification(int userId);
         public Task<ResponseDTO> createNotification(NewNoti notification);
         public Task<ResponseDTO> isReadNotification(int notificationId);
-        public Task<ResponseDTO> removeNotification(List<int> notify);
+        public Task<ResponseDTO> removeNotification(int notiId);
 
     }
 }

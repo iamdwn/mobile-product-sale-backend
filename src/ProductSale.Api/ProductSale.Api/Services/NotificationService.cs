@@ -85,19 +85,17 @@ namespace ProductSale.Api.Services
             return ResponseUtils.GetObject("Request accepted", "Notification updated successfully", HttpStatusCode.OK, null);
         }
 
-        public async Task<ResponseDTO> removeNotification(List<int> notify)
+        public async Task<ResponseDTO> removeNotification(int notiId)
         {
-            foreach (var item in notify)
-            {
-                var notification = await Task.FromResult(_unitOfWork.NotificationRepository.Get(c => c.NotificationId == item).SingleOrDefault());
 
-                if (notification == null)
-                {
-                    return ResponseUtils.Error("Request fails", "Notification not found", HttpStatusCode.NotFound);
-                }
-                _unitOfWork.NotificationRepository.Delete(notification);
-                _unitOfWork.Save();
+            var notification = await Task.FromResult(_unitOfWork.NotificationRepository.Get(c => c.NotificationId == notiId).SingleOrDefault());
+
+            if (notification == null)
+            {
+                return ResponseUtils.Error("Request fails", "Notification not found", HttpStatusCode.NotFound);
             }
+            _unitOfWork.NotificationRepository.Delete(notification);
+            _unitOfWork.Save();
 
             return ResponseUtils.GetObject("Request accepted", "Notification removed successfully", HttpStatusCode.OK, null);
         }
