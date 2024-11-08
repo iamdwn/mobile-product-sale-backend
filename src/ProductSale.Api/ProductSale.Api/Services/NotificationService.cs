@@ -55,7 +55,9 @@ namespace ProductSale.Api.Services
                 return ResponseUtils.Error("Request fails", "User not found", HttpStatusCode.NotFound);
             }
 
-            var notifications = await Task.FromResult(_unitOfWork.NotificationRepository.Get(c => c.UserId == userId));
+            var notifications = await Task.FromResult(_unitOfWork.NotificationRepository.Get(c => c.UserId == userId)
+                .OrderByDescending(c => c.CreatedAt).ToList()
+                );
 
             List<NotificationDTO> notificationDTO = new List<NotificationDTO>();
 
