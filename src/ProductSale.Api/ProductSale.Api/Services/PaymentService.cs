@@ -62,40 +62,31 @@ namespace ProductSale.Api.Services
 
         public async Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO req)
         {
-            var existingOrder = _unitOfWork.OrderRepository.GetByID(req.OrderId);
-
-            if (existingOrder == null)
-            {
-                return "";
-            }
+            var existingOrder = _unitOfWork.OrderRepository.Get(
+                filter: o => o.OrderId.Equals(req.OrderId),
+                noTracking: true
+                ).FirstOrDefault();
+            if (existingOrder?.CartId == null) return "";
 
             var existingCart = _unitOfWork.CartRepository.GetByID(existingOrder.CartId);
-
-            if (existingCart == null)
-            {
-                return "";
-            }
+            if (existingCart == null) return "";
 
             req.Amount = existingCart.TotalPrice;
 
             var qrCodeUrl = await _payOSClient.PayOSAsync(req);
+            if (string.IsNullOrEmpty(qrCodeUrl)) return "";
 
-            if (string.IsNullOrEmpty(qrCodeUrl))
-            {
-                return "";
-            }
-
-            var payment = new Payment
+            _unitOfWork.PaymentRepository.Insert(new Payment
             {
                 OrderId = req.OrderId,
                 Amount = req.Amount,
                 PaymentStatus = PaymentStatus.PENDING.ToString(),
                 PaymentDate = DateTime.Now
-            };
-            _unitOfWork.PaymentRepository.Insert(payment);
-            _unitOfWork.Save();
+            });
 
+            _unitOfWork.Save();
             return qrCodeUrl;
+
         }
 
         public async Task<object> CancelPayOSPaymentAsync(long orderCode, string reason = "")

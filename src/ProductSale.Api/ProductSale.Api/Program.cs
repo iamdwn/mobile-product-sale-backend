@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using ProductSale.Api.Clients;
 using ProductSale.Api.Services;
@@ -23,6 +22,11 @@ namespace ProductSale.Api
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddHttpClient<PayOSClient>();
+            builder.Services.AddHttpClient<GoMapsProService>();
+
+            //string goMapsApiKey = "AlzaSyJ-TujuvlBIoq23w5Gf1hpMTTz6k5NsZxV";
+            //builder.Services.AddSingleton(new GoMapsProService(new HttpClient(), goMapsApiKey));
+
             builder.Services.AddScoped<IPaymentService, PaymentService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -32,6 +36,7 @@ namespace ProductSale.Api
             builder.Services.AddScoped<IChatService, ChatService>();
 
             builder.Services.AddScoped<IPayOSClient, PayOSClient>();
+            builder.Services.AddScoped<IGoMapsProService, GoMapsProService>();
 
             builder.Services.AddScoped<INotificationService, NotificationService>();
 

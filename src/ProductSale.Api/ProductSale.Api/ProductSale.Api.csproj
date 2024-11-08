@@ -20,4 +20,8 @@
     <ProjectReference Include="..\ProductSale.Data\ProductSale.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>
