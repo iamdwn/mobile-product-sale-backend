@@ -65,8 +65,8 @@ namespace ProductSale.Api.Clients
                 (int)req.Amount,
                 req.Note,
                 new List<ItemData>(),
-                "Success",
-                "Fail"
+                "https://product-sale.iamdwn.dev/cancel",
+                "https://product-sale.iamdwn.dev/"
               );
 
             CreatePaymentResult createPayment = await payOS.createPaymentLink(paymentData);
