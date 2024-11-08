@@ -1,4 +1,5 @@
-﻿using ProductSale.Api.Services.Interfaces;
+﻿using ProductSale.Api.Clients.Interfaces;
+using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
 using ProductSale.Data.Enums;
@@ -68,20 +69,31 @@ namespace ProductSale.Api.Services
                 ).FirstOrDefault();
             if (existingOrder?.CartId == null) return "";
 
+            var existingPayment = _unitOfWork.PaymentRepository.Get(
+               filter: o => o.OrderId.Equals(req.OrderId),
+               noTracking: true
+               ).FirstOrDefault();
+            if (existingPayment != null) return "https://product-sale.iamdwn.dev/failure";
+
             var existingCart = _unitOfWork.CartRepository.GetByID(existingOrder.CartId);
-            if (existingCart == null) return "";
+            if (existingCart == null) return "https://product-sale.iamdwn.dev/failure";
 
             req.Amount = existingCart.TotalPrice;
 
+            var orderCode = GenerateRandomPaymentCode();
+
+            req.TransactionId = orderCode.ToString();
+
             var qrCodeUrl = await _payOSClient.PayOSAsync(req);
-            if (string.IsNullOrEmpty(qrCodeUrl)) return "";
+            if (string.IsNullOrEmpty(qrCodeUrl)) return "https://product-sale.iamdwn.dev/failure";
 
             _unitOfWork.PaymentRepository.Insert(new Payment
             {
                 OrderId = req.OrderId,
                 Amount = req.Amount,
                 PaymentStatus = PaymentStatus.PENDING.ToString(),
-                PaymentDate = DateTime.Now
+                PaymentDate = DateTime.Now,
+                TransactionId = req.TransactionId
             });
 
             _unitOfWork.Save();
@@ -125,6 +137,30 @@ namespace ProductSale.Api.Services
 
             _unitOfWork.PaymentRepository.Update(updatedPayment);
             _unitOfWork.Save();
+        }
+
+        public async Task<string> CheckStatusPayOSPaymentAsync(int orderId)
+        {
+            var existingPayment = _unitOfWork.PaymentRepository.Get(
+                    filter: o => o.OrderId.Equals(orderId),
+                    noTracking: true
+                    ).FirstOrDefault();
+
+            long.TryParse(existingPayment.TransactionId, out long transId);
+
+            return await _payOSClient.CheckPayOSAsync(transId);
+        }
+
+        public long GenerateRandomPaymentCode()
+        {
+            Random random = new Random();
+
+            int lower = random.Next(10000000, 99999999);
+            int upper = random.Next(10000000, 99999999);
+
+            long randomLong = ((long)lower * 100000000) + upper;
+
+            return randomLong;
         }
     }
 }

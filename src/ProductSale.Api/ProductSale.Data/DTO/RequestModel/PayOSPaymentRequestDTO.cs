@@ -9,5 +9,7 @@
         public decimal Amount { get; set; }
 
         public string? Note { get; set; }
+
+        public string? TransactionId { get; set; }
     }
 }

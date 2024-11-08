@@ -97,5 +97,11 @@ namespace ProductSale.Api.Controllers
             var cancelResponse = await _paymentService.CancelPayOSPaymentAsync(orderCode, reason);
             return Ok(cancelResponse);
         }
+
+        [HttpGet("check-status-payos/{orderId}")]
+        public async Task<string> CheckPayOSPaymentStatus(int orderId)
+        {
+            return await _paymentService.CheckStatusPayOSPaymentAsync(orderId);
+        }
     }
 }
