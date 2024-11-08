@@ -18,12 +18,9 @@ namespace ProductSale.Api.Clients
         public PayOSClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            //_clientId = Environment.GetEnvironmentVariable("ClientId");
-            //_apiKey = Environment.GetEnvironmentVariable("ApiKey");
-            //_checksumKey = Environment.GetEnvironmentVariable("ChecksumKey");
-            _clientId = "58f6fa09-5827-4601-ac3f-528bc1f48010";
-            _apiKey = "a9d6003a-6f24-4563-a896-946d1a12faaf";
-            _checksumKey = "439145ed3cffafa3186a31ed6a46a99517ad05a0dc34dbafc478ae360b051557";
+            _clientId = Environment.GetEnvironmentVariable("ClientId");
+            _apiKey = Environment.GetEnvironmentVariable("ApiKey");
+            _checksumKey = Environment.GetEnvironmentVariable("ChecksumKey");
         }
 
         public async Task<PayOSPaymentResponseDTO> CreatePaymentRequest(PayOSPaymentRequestDTO paymentRequest)
@@ -108,10 +105,19 @@ namespace ProductSale.Api.Clients
         {
             PayOS payOS = new PayOS(_clientId, _apiKey, _checksumKey);
 
-            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation((long)orderCode);
+            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation(orderCode);
 
             if (paymentLinkInformation == null) return "Not found";
-            return paymentLinkInformation.status.ToString();
+            switch (paymentLinkInformation.status)
+            {
+                case "PENDING":
+                    return "PENDING";
+                case "CANCELED":
+                    return "CANCELED";
+                case "PAID":
+                    return "PAID";
+                default: return "NOT FOUND";
+            }
         }
     }
 }
