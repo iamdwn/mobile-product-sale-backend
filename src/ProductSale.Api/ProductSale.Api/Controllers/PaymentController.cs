@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HtmlAgilityPack;
+using Microsoft.AspNetCore.Mvc;
 using ProductSale.Api.Services.Interfaces;
+using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
 
 namespace ProductSale.Api.Controllers
@@ -9,10 +11,12 @@ namespace ProductSale.Api.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PaymentController(IPaymentService paymentService)
+        public PaymentController(IPaymentService paymentService, IUnitOfWork unitOfWork)
         {
             _paymentService = paymentService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("get-vietqr/{paymentId}")]
@@ -52,8 +56,39 @@ namespace ProductSale.Api.Controllers
         [HttpPost("payos")]
         public async Task<IActionResult> CreatePayOSPayment([FromBody] PayOSPaymentRequestDTO request)
         {
-            var qrCodeUrl = await _paymentService.CreatePayOSPaymentAsync(request);
-            return Ok(new { QrCodeUrl = qrCodeUrl });
+            try
+            {
+                var order = _unitOfWork.OrderRepository.GetByID(request.OrderId);
+                if (order == null) return NotFound();
+
+                string url = await _paymentService.CreatePayOSPaymentAsync(request);
+                //return Ok(new { qrUrl });
+                using HttpClient client = new HttpClient();
+                string html = await client.GetStringAsync(url);
+
+                HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(html);
+
+                HtmlNode qrNode = doc.DocumentNode.SelectSingleNode("//img[@alt='qrcode']");
+
+                if (qrNode != null)
+                {
+                    string qrUrl = qrNode.GetAttributeValue("src", "");
+                    string[] parts = qrUrl.Split(new string[] { "&amp;" }, StringSplitOptions.None);
+                    qrUrl = string.Join("&", parts);
+                    return Ok(new { qrUrl });
+                }
+                else
+                {
+                    Console.WriteLine("Not found QRCode.");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error: " + e.Message);
+            }
+
+            return Ok("");
         }
 
         [HttpPost("cancel")]
