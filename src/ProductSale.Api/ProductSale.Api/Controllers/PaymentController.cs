@@ -103,5 +103,11 @@ namespace ProductSale.Api.Controllers
         {
             return await _paymentService.CheckStatusPayOSPaymentAsync(orderId);
         }
+
+        [HttpGet("get-paymentId/{orderId}")]
+        public async Task<int> GetPaymentId(int orderId)
+        {
+            return await _paymentService.GetPaymentId(orderId);
+        }
     }
 }

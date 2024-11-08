@@ -162,5 +162,22 @@ namespace ProductSale.Api.Services
 
             return randomLong;
         }
+
+        public async Task<int> GetPaymentId(int orderId)
+        {
+            var existingOrder = _unitOfWork.OrderRepository.Get(
+               filter: o => o.OrderId.Equals(orderId),
+               noTracking: true
+               ).FirstOrDefault();
+            if (existingOrder == null) return -1;
+
+            var existingPayment = _unitOfWork.PaymentRepository.Get(
+               filter: o => o.OrderId.Equals(orderId),
+               noTracking: true
+               ).FirstOrDefault();
+            if (existingPayment == null) return -1;
+
+            return existingPayment.PaymentId;
+        }
     }
 }
