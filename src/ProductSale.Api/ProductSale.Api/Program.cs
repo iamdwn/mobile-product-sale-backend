@@ -29,6 +29,7 @@ namespace ProductSale.Api
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IPaymentService, PaymentService>();
+            builder.Services.AddScoped<IChatService, ChatService>();
 
             builder.Services.AddScoped<IPayOSClient, PayOSClient>();
 
