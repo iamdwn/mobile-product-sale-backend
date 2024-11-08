@@ -14,5 +14,6 @@ namespace ProductSale.Api.Services.Interfaces
         Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO request);
         Task<object> CancelPayOSPaymentAsync(long orderCode, string reason = "");
         Task<string> CheckStatusPayOSPaymentAsync(int orderId);
+        Task<int> GetPaymentId(int orderId);
     }
 }
