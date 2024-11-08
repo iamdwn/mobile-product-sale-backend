@@ -38,9 +38,9 @@ namespace ProductSale.Api.Controllers
         }
 
         [HttpDelete("remove")]
-        public async Task<ResponseDTO> RemoveNoti([FromBody] List<int> noti)
+        public async Task<ResponseDTO> RemoveNoti([FromQuery] int notiId)
         {
-            return await _notificationService.removeNotification(noti);
+            return await _notificationService.removeNotification(notiId);
         }
 
 
