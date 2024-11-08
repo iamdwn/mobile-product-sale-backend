@@ -19,7 +19,7 @@ namespace ProductSale.Api.Services
 
         public async Task<IActionResult> FetchMessageFromRoom(int roomId)
         {
-            var room = _unitOfWork.ChatMessageRepository.Get(c => c.RoomId == roomId).FirstOrDefault();
+            var room = _unitOfWork.ChatMessageRepository.Get(c => c.RoomId == roomId);
             if (room == null)
                 return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Fetch failed." });
 
