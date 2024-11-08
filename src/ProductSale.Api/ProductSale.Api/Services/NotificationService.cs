@@ -5,6 +5,7 @@ using ProductSale.Data.Base;
 using ProductSale.Data.DTO.RequestModel;
 using ProductSale.Data.DTO.ResponseModel;
 using ProductSale.Data.Models;
+using System.Globalization;
 using System.Net;
 
 namespace ProductSale.Api.Services
@@ -29,7 +30,16 @@ namespace ProductSale.Api.Services
                 return ResponseUtils.Error("Request fails", "User not found", HttpStatusCode.NotFound);
             }
 
+            string format = "dd/MM/yyyy HH:mm";
+
             Notification newNotification = _mapper.Map<Notification>(notification);
+
+            DateTime expiredDate = DateTime.ParseExact(notification.CreatedAt, format, CultureInfo.InvariantCulture);
+
+            DateTime utcDateTime = expiredDate.ToUniversalTime();
+
+            newNotification.CreatedAt = utcDateTime;
+
             _unitOfWork.NotificationRepository.Insert(newNotification);
             _unitOfWork.Save();
 
