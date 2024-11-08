@@ -21,7 +21,7 @@ namespace ProductSale.Api.Services
         {
             var room = _unitOfWork.ChatMessageRepository.Get(c => c.RoomId == roomId).FirstOrDefault();
             if (room == null)
-                return new NotFoundObjectResult("Fetch failed.");
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Fetch failed." });
 
             return new OkObjectResult(room);
         }
@@ -41,7 +41,7 @@ namespace ProductSale.Api.Services
                 _unitOfWork.ChatMessageRepository.Insert(chatMessage);
                 _unitOfWork.Save();
 
-                return new OkObjectResult("Send message success.");
+                return new OkObjectResult(new ResponseMessageDTO { Message = "Send message success." });
             }
             catch (Exception ex)
             {

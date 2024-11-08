@@ -26,11 +26,11 @@ namespace ProductSale.Api.Services
         {
             var product = _unitOfWork.ProductRepository.GetByID(productId);
             if (product == null)
-                return new NotFoundObjectResult("Product not found.");
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Product not found." });
 
             var cart = _unitOfWork.CartRepository.Get(filter: c => c.CartId == cartId, includeProperties: "CartItems").FirstOrDefault();
             if (cart == null)
-                return new NotFoundObjectResult("Cart not found.");
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Cart not found." });
 
             var cartItem = cart.CartItems?.FirstOrDefault(ci => ci.ProductId == productId);
 
@@ -53,7 +53,7 @@ namespace ProductSale.Api.Services
             cart.UpdateTotalPrice();
             _unitOfWork.CartRepository.Update(cart);
             _unitOfWork.Save();
-            return new OkObjectResult("Product added to cart.");
+            return new OkObjectResult(new ResponseMessageDTO { Message = "Product added to cart." });
         }
 
         public async Task<IActionResult> GetCart(int id)
@@ -63,7 +63,7 @@ namespace ProductSale.Api.Services
                 .ThenInclude(ci => ci.Product)
                 .FirstOrDefault();
             if (cart == null)
-                return new NotFoundObjectResult("Cart not found.");
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Cart not found." });
 
             var cartDTO = _mapper.Map<CartDTO>(cart);
             return new OkObjectResult(cartDTO);
@@ -76,7 +76,10 @@ namespace ProductSale.Api.Services
                 .ThenInclude(ci => ci.Product)
                 .FirstOrDefault();
             if (cart == null)
-                return new NotFoundObjectResult("User's cart not found.");
+                return new NotFoundObjectResult(new ResponseMessageDTO
+                {
+                    Message = "User's cart not found."
+                });
 
             var cartDTO = _mapper.Map<CartDTO>(cart);
             return new OkObjectResult(cartDTO);
@@ -86,11 +89,14 @@ namespace ProductSale.Api.Services
         {
             var cart = _unitOfWork.CartRepository.Get(filter: c => c.CartId == cartId, includeProperties: "CartItems").FirstOrDefault();
             if (cart == null)
-                return new NotFoundObjectResult("Cart not found.");
+                return new NotFoundObjectResult(new ResponseMessageDTO
+                {
+                    Message = "Cart not found."
+                });
 
             var cartItem = cart.CartItems?.FirstOrDefault(ci => ci.ProductId == productId);
             if (cartItem == null)
-                return new NotFoundObjectResult("Product not found in cart.");
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Product not found in cart." });
 
             if (cartItem.Quantity == 1)
             {
@@ -104,7 +110,10 @@ namespace ProductSale.Api.Services
             cart.UpdateTotalPrice();
             _unitOfWork.CartRepository.Update(cart);
             _unitOfWork.Save();
-            return new OkObjectResult("Product removed from cart.");
+            return new OkObjectResult(new ResponseMessageDTO
+            {
+                Message = "Product removed from cart."
+            });
         }
     }
 }
