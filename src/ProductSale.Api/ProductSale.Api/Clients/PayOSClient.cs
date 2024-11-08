@@ -1,7 +1,7 @@
 ﻿using Net.payOS;
 using Net.payOS.Types;
 using Newtonsoft.Json;
-using ProductSale.Api.Services.Interfaces;
+using ProductSale.Api.Clients.Interfaces;
 using ProductSale.Data.DTO.RequestModel;
 using ProductSale.Data.DTO.ResponseModel;
 using System.Text;
@@ -60,8 +60,12 @@ namespace ProductSale.Api.Clients
             //    return paymentLinkInformation.canceledAt;
             //}
 
+            long orderCode = GenerateRandomPaymentCode();
+
+            long.TryParse(req.TransactionId, out long transId);
+
             PaymentData paymentData = new PaymentData(
-                GenerateRandomPaymentCode(),
+                transId,
                 (int)req.Amount,
                 req.Note,
                 new List<ItemData>(),
@@ -98,6 +102,16 @@ namespace ProductSale.Api.Clients
             long randomLong = ((long)lower * 100000000) + upper;
 
             return randomLong;
+        }
+
+        public async Task<string> CheckPayOSAsync(long orderCode)
+        {
+            PayOS payOS = new PayOS(_clientId, _apiKey, _checksumKey);
+
+            PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation((long)orderCode);
+
+            if (paymentLinkInformation == null) return "Not found";
+            return paymentLinkInformation.status;
         }
     }
 }

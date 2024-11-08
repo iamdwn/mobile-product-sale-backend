@@ -13,5 +13,6 @@ namespace ProductSale.Api.Services.Interfaces
         Task<bool> GetPaymentStatus(int paymentId);
         Task<string> CreatePayOSPaymentAsync(PayOSPaymentRequestDTO request);
         Task<object> CancelPayOSPaymentAsync(long orderCode, string reason = "");
+        Task<string> CheckStatusPayOSPaymentAsync(int orderId);
     }
 }

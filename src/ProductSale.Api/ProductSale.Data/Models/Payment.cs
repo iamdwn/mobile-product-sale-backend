@@ -12,5 +12,7 @@ public partial class Payment
 
     public string PaymentStatus { get; set; } = null!;
 
+    public string TransactionId { get; set; } = null;
+
     public virtual Order? Order { get; set; }
 }

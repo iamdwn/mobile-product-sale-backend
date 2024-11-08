@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProductSale.Api.Clients;
+using ProductSale.Api.Clients.Interfaces;
 using ProductSale.Api.Services;
 using ProductSale.Api.Services.Interfaces;
 using ProductSale.Data.Base;
