@@ -111,7 +111,7 @@ namespace ProductSale.Api.Clients
             PaymentLinkInformation paymentLinkInformation = await payOS.getPaymentLinkInformation((long)orderCode);
 
             if (paymentLinkInformation == null) return "Not found";
-            return paymentLinkInformation.status;
+            return paymentLinkInformation.status.ToString();
         }
     }
 }
