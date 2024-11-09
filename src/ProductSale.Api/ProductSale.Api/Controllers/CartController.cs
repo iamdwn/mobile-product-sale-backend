@@ -37,5 +37,11 @@ namespace ProductSale.Api.Controllers
         {
             return await _cartService.RemoveFromCart(productId, cartId);
         }
+
+        [HttpPut("ClearCart")]
+        public async Task<IActionResult> ClearCart([FromQuery] int cartId)
+        {
+            return await _cartService.ClearCart(cartId);
+        }
     }
 }
