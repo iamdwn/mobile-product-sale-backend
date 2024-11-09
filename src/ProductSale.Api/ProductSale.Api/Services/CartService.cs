@@ -56,6 +56,19 @@ namespace ProductSale.Api.Services
             return new OkObjectResult(new ResponseMessageDTO { Message = "Product added to cart." });
         }
 
+        public async Task<IActionResult> ClearCart(int cartId)
+        {
+            var cart = _unitOfWork.CartRepository.Get(filter: c => c.CartId == cartId, includeProperties: "CartItems").FirstOrDefault();
+            if (cart == null)
+                return new NotFoundObjectResult(new ResponseMessageDTO { Message = "Cart not found." });
+
+            cart.CartItems.Clear();
+            cart.UpdateTotalPrice();
+            _unitOfWork.CartRepository.Update(cart);
+            _unitOfWork.Save();
+            return new OkObjectResult(new ResponseMessageDTO { Message = "Clear cart success." });
+        }
+
         public async Task<IActionResult> GetCart(int id)
         {
             var cart = _context.Carts.Where(c => c.CartId == id)

@@ -9,5 +9,6 @@ namespace ProductSale.Api.Services.Interfaces
         Task<IActionResult> GetCartByUser(int id);
         Task<IActionResult> AddToCart(int productId, int cart);
         Task<IActionResult> RemoveFromCart(int productId, int cart);
+        Task<IActionResult> ClearCart(int cartId);
     }
 }
