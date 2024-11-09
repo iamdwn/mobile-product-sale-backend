@@ -21,6 +21,9 @@ namespace ProductSale.Api.Clients
             _clientId = Environment.GetEnvironmentVariable("ClientId");
             _apiKey = Environment.GetEnvironmentVariable("ApiKey");
             _checksumKey = Environment.GetEnvironmentVariable("ChecksumKey");
+            //_clientId = "58f6fa09-5827-4601-ac3f-528bc1f48010";
+            //_apiKey = "a9d6003a-6f24-4563-a896-946d1a12faaf";
+            //_checksumKey = "439145ed3cffafa3186a31ed6a46a99517ad05a0dc34dbafc478ae360b051557";
         }
 
         public async Task<PayOSPaymentResponseDTO> CreatePaymentRequest(PayOSPaymentRequestDTO paymentRequest)
