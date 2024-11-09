@@ -26,11 +26,12 @@ namespace ProductSale.Api.Services
                 throw new Exception("Not Found");
             }
 
-            var updatedPayment = existingPayment.Result;
-            updatedPayment.PaymentDate = DateTime.Now;
-            updatedPayment.PaymentStatus = PaymentStatus.COMPLETED.ToString();
+            //var updatedPayment = existingPayment.Result;
+            //updatedPayment.PaymentDate = DateTime.Now;
+            //updatedPayment.PaymentStatus = PaymentStatus.COMPLETED.ToString();
 
-            _unitOfWork.PaymentRepository.Update(updatedPayment);
+            //_unitOfWork.PaymentRepository.Update(updatedPayment);
+            _unitOfWork.PaymentRepository.Delete(existingPayment);
             _unitOfWork.Save();
         }
 
@@ -69,11 +70,12 @@ namespace ProductSale.Api.Services
                 ).FirstOrDefault();
             if (existingOrder?.CartId == null) return "";
 
-            var existingPayment = _unitOfWork.PaymentRepository.Get(
-               filter: o => o.OrderId.Equals(req.OrderId),
-               noTracking: true
-               ).FirstOrDefault();
-            if (existingPayment != null) return "https://product-sale.iamdwn.dev/failure";
+            //var existingPayment = _unitOfWork.PaymentRepository.Get(
+            //   filter: o => o.OrderId.Equals(req.OrderId),
+            //   noTracking: true,
+            //   orderBy: o => o.OrderByDescending(p => p.PaymentDate)
+            //   ).FirstOrDefault();
+            //if (existingPayment != null) return "https://product-sale.iamdwn.dev/failure";
 
             var existingCart = _unitOfWork.CartRepository.GetByID(existingOrder.CartId);
             if (existingCart == null) return "https://product-sale.iamdwn.dev/failure";
