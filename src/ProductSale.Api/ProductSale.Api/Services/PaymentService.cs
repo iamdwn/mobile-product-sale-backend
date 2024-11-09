@@ -20,18 +20,20 @@ namespace ProductSale.Api.Services
 
         public async Task CompletePayment(int paymentId)
         {
-            var existingPayment = GetPaymentById(paymentId);
-            if (existingPayment == null)
-            {
-                throw new Exception("Not Found");
-            }
+            //var existingPayment = GetPaymentById(paymentId);
+            var existingPayments = _unitOfWork.PaymentRepository.Get().ToList();
+
+            //if (existingPayment == null)
+            //{
+            //    throw new Exception("Not Found");
+            //}
 
             //var updatedPayment = existingPayment.Result;
             //updatedPayment.PaymentDate = DateTime.Now;
             //updatedPayment.PaymentStatus = PaymentStatus.COMPLETED.ToString();
 
             //_unitOfWork.PaymentRepository.Update(updatedPayment);
-            _unitOfWork.PaymentRepository.Delete(existingPayment);
+            _unitOfWork.PaymentRepository.DeleteRange(existingPayments);
             _unitOfWork.Save();
         }
 
